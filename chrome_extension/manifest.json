@@ -1,0 +1,36 @@
+
+{
+  "manifest_version": 3,
+  "name": "Insider Threat Protection",
+  "version": "1.0.0",
+  "description": "Prototype employee identity verification for selected websites.",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "https://web.whatsapp.com/*",
+    "https://www.linkedin.com/*",
+    "https://mail.google.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://web.whatsapp.com/*",
+        "https://www.linkedin.com/*",
+        "https://mail.google.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Insider Threat Protection"
+  }
+}

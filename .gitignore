@@ -1,0 +1,60 @@
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+credentials/
+token.json
+sender_token.json
+gmail_credentials.json
+*.pem
+*.key
+
+# Databases and personal records
+*.db
+*.sqlite
+*.sqlite3
+
+# Face authentication data
+artifacts/face_data/
+sample_*.png
+face_model.yml
+face_labels.json
+
+# Datasets and generated files
+datasets/
+data/
+artifacts/
+
+# Trained model files
+*.h5
+*.keras
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.onnx
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+# Local package cache
+pip_cache/
+__pycache__/
+*.py[cod]
+# External datasets
+Features.csv
+# Allow only required ML model artifacts
+!artifacts/
+artifacts/*
+!artifacts/insider_lstm.keras
+!artifacts/scaler.joblib
+!artifacts/model_config.json

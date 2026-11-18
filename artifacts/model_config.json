@@ -1,0 +1,32 @@
+{
+  "model_type": "LSTM",
+  "features": [
+    "L1_norm",
+    "L2_norm",
+    "L3_norm",
+    "L4_norm",
+    "L5_norm",
+    "L6_norm",
+    "L7_norm",
+    "L8_norm",
+    "L9_norm",
+    "E1_norm",
+    "E2_norm",
+    "E3_norm",
+    "E4_norm",
+    "E5_norm",
+    "F1_norm",
+    "H1_norm",
+    "H2_norm",
+    "H3_norm",
+    "D1_norm",
+    "D2_norm"
+  ],
+  "threshold": 0.9500000000000002,
+  "input_shape": [
+    20,
+    1
+  ],
+  "random_state": 42,
+  "note": "This model treats tabular features as timesteps; it is not yet a temporal sequence of user activity."
+}

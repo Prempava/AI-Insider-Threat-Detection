@@ -1,0 +1,991 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureWork | Security Analyst</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f3f6fb;
+      color: #172033;
+    }
+
+    header {
+      background: #172554;
+      color: white;
+      padding: 20px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .brand span {
+      color: #93c5fd;
+    }
+
+    .header-label {
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 4px;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin: 25px 0;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    .count {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 10px 0 0;
+    }
+
+    .blue { color: #2858c5; }
+    .green { color: #15803d; }
+    .red { color: #b91c1c; }
+    .orange { color: #c2410c; }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    input, select {
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: white;
+      font: inherit;
+    }
+
+    input {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 16px;
+      background: #2858c5;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2049a7;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .secondary {
+      background: #64748b;
+    }
+
+    .secondary:hover {
+      background: #475569;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 13px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #475569;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .normal {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .threat {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .open {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .under-review {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .resolved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .notice {
+      padding: 13px;
+      background: #eef5ff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-row {
+      padding: 9px 0;
+      border-bottom: 1px solid #e2e8f0;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-label {
+      display: inline-block;
+      min-width: 145px;
+      font-weight: 600;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      main {
+        padding: 0 12px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .detail-label {
+        display: block;
+        margin-bottom: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <div class="brand">🛡️ Secure<span>Work</span></div>
+    <div class="header-label">Security Operations Center</div>
+  </div>
+
+  <div>Security Analyst Dashboard · Local Prototype</div>
+</header>
+
+<main>
+
+  <section class="card" id="loginCard" style="max-width: 440px; margin: 40px auto;">
+    <h2>🔐 Analyst Login</h2>
+    <p class="muted">Sign in to access the SecureWork security dashboard.</p>
+
+    <form id="loginForm">
+      <label for="loginUsername">Username</label>
+      <input
+        id="loginUsername"
+        name="username"
+        type="text"
+        autocomplete="username"
+        placeholder="Enter analyst username"
+        required
+        style="width: 100%; margin: 8px 0 16px;"
+      >
+
+      <label for="loginPassword">Password</label>
+      <input
+        id="loginPassword"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+        required
+        style="width: 100%; margin: 8px 0 16px;"
+      >
+
+      <button id="loginButton" type="submit">Sign In</button>
+      <p id="loginMessage" class="notice" role="status" aria-live="polite" hidden></p>
+    </form>
+  </section>
+
+  <h1>Security Overview</h1>
+
+  <p class="muted">
+    Review simulated workplace events and experimental model predictions
+    across all employees.
+  </p>
+
+  <div class="summary">
+    <section class="card">
+      <h2>Total Events</h2>
+      <p class="count blue" id="totalCount">0</p>
+    </section>
+
+    <section class="card">
+      <h2>Normal Predictions</h2>
+      <p class="count green" id="normalCount">0</p>
+    </section>
+
+    <section class="card">
+      <h2>Threat Alerts</h2>
+      <p class="count red" id="threatCount">0</p>
+    </section>
+
+    <section class="card">
+      <h2>Open Threat Alerts</h2>
+      <p class="count orange" id="openThreatCount">0</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>All Employee Events</h2>
+
+    <div class="notice" id="status" role="status" aria-live="polite">
+      Loading events from the API...
+    </div>
+
+    <div class="toolbar">
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="Search employee ID or event type"
+        aria-label="Search employee ID or event type"
+      >
+
+      <select id="predictionFilter" aria-label="Filter by prediction">
+        <option value="all">All predictions</option>
+        <option value="Normal">Normal</option>
+        <option value="Threat">Threat</option>
+        <option value="unknown">Not analyzed</option>
+      </select>
+
+      <select id="statusFilter" aria-label="Filter by status">
+        <option value="all">All statuses</option>
+        <option value="open">Open</option>
+        <option value="under_review">Under review</option>
+        <option value="resolved">Resolved</option>
+      </select>
+
+      <button id="refreshButton" type="button">Refresh events</button>
+    </div>
+
+<div class="ai-investigation-controls">
+  <button
+    id="runInvestigationButton"
+    type="button"
+    onclick="runAIInvestigation()"
+  >
+    Run AI Investigation
+  </button>
+
+  <pre
+    id="aiInvestigationResult"
+    aria-live="polite"
+    style="white-space: pre-wrap; overflow-wrap: anywhere;"
+  ></pre>
+</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Event Type</th>
+            <th>Prediction</th>
+            <th>Risk Score</th>
+            <th>Status</th>
+            <th>Timestamp</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="eventTableBody">
+          <tr>
+            <td colspan="7" class="empty">Loading events...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" id="investigationPanel" hidden>
+    <h2>🔍 Event Investigation</h2>
+
+    <p class="muted">
+      Review the selected event before changing its status.
+    </p>
+
+    <div id="investigationDetails"></div>
+
+    <div class="toolbar" style="margin-top: 20px">
+      <label for="investigationStatus">Investigation status:</label>
+
+      <select id="investigationStatus">
+        <option value="open">Open</option>
+        <option value="under_review">Under Review</option>
+        <option value="resolved">Resolved</option>
+      </select>
+
+      <button id="saveStatusButton" type="button">Save Status</button>
+      <button id="closeInvestigationButton" class="secondary" type="button">
+        Close Panel
+      </button>
+    </div>
+
+    <p id="investigationMessage" class="notice" role="status" aria-live="polite" hidden></p>
+  </section>
+
+  <p class="muted">
+    Prototype notice: event data and feature values are simulated.
+    Model predictions are experimental and do not establish malicious intent.
+    Automated blocking is disabled. This dashboard is not authenticated.
+  </p>
+
+<section class="card" id="dlpHistorySection">
+  <h2>Data Loss Prevention (DLP) Scan History</h2>
+  <p class="muted">
+    Review sensitive-data findings and destination authorization.
+    This view records detection results; it does not block transfers.
+  </p>
+
+  <div class="toolbar">
+    <button type="button" id="refreshDlpButton">Refresh DLP History</button>
+    <span id="dlpStatus" class="muted" role="status">
+      DLP history has not been loaded yet.
+    </span>
+  </div>
+
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:10px;">Time</th>
+          <th style="text-align:left;padding:10px;">File</th>
+          <th style="text-align:left;padding:10px;">Destination</th>
+          <th style="text-align:left;padding:10px;">Authorization</th>
+          <th style="text-align:left;padding:10px;">Risk</th>
+          <th style="text-align:left;padding:10px;">Findings</th>
+          <th style="text-align:left;padding:10px;">Review</th>
+        </tr>
+      </thead>
+      <tbody id="dlpHistoryBody">
+        <tr>
+          <td colspan="7" style="padding:10px;">
+            No scans loaded.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</main>
+<script>
+  const API = "http://127.0.0.1:8000";
+
+let accessToken = null;
+
+const loginCard = document.getElementById("loginCard");
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
+
+// Hide the dashboard until the analyst signs in.
+document.querySelectorAll("main > :not(#loginCard)").forEach(element => {
+  element.hidden = true;
+});
+
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const loginButton = document.getElementById("loginButton");
+  loginButton.disabled = true;
+  loginMessage.hidden = true;
+
+  try {
+    const response = await fetch(`${API}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: document.getElementById("loginUsername").value,
+        password: document.getElementById("loginPassword").value
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.detail || "Login failed.");
+    }
+
+    accessToken = result.access_token;
+
+    loginForm.reset();
+    loginCard.hidden = true;
+
+    document.querySelectorAll("main > :not(#loginCard)").forEach(element => {
+      element.hidden = false;
+    });
+
+    await loadEvents();
+  } catch (error) {
+    loginMessage.textContent = error.message;
+    loginMessage.hidden = false;
+  } finally {
+    loginButton.disabled = false;
+  }
+});
+
+  let allEvents = [];
+  let selectedEventId = null;
+
+  const statusElement = document.getElementById("status");
+  const tableBody = document.getElementById("eventTableBody");
+  const refreshButton = document.getElementById("refreshButton");
+  const saveStatusButton = document.getElementById("saveStatusButton");
+
+  function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+      return timestamp || "N/A";
+    }
+
+    return date.toLocaleString();
+  }
+
+  function formatRiskScore(score) {
+    if (score === null || score === undefined || score === "") {
+      return "N/A";
+    }
+
+    const value = Number(score);
+
+    return Number.isFinite(value) ? value.toFixed(4) : String(score);
+  }
+
+  function createBadge(text, className) {
+    const badge = document.createElement("span");
+    badge.className = `badge ${className}`;
+    badge.textContent = text;
+    return badge;
+  }
+
+  function showInvestigationMessage(text, isError = false) {
+    const message = document.getElementById("investigationMessage");
+    message.textContent = text;
+    message.hidden = false;
+    message.style.background = isError ? "#fee2e2" : "#eef5ff";
+    message.style.color = isError ? "#991b1b" : "#1e40af";
+  }
+
+  function openInvestigation(event) {
+    selectedEventId = event.event_id;
+
+    const panel = document.getElementById("investigationPanel");
+    const details = document.getElementById("investigationDetails");
+    const statusSelect = document.getElementById("investigationStatus");
+    const message = document.getElementById("investigationMessage");
+
+    details.replaceChildren();
+    message.hidden = true;
+
+    const fields = [
+      ["Event ID", event.event_id],
+      ["Employee ID", event.user_id],
+      ["Event Type", event.event_type],
+      ["Description", event.description ?? "N/A"],
+      ["Prediction", event.prediction ?? "Not analyzed"],
+      ["Risk Score", event.risk_score ?? "N/A"],
+      ["Model Threshold", event.model_threshold ?? "N/A"],
+      ["Current Status", event.status ?? "open"],
+      ["Timestamp", formatTimestamp(event.timestamp)],
+      ["Automated Blocking", event.automated_blocking ?? false]
+    ];
+
+    fields.forEach(([label, value]) => {
+      const paragraph = document.createElement("p");
+      paragraph.className = "detail-row";
+
+      const strong = document.createElement("span");
+      strong.className = "detail-label";
+      strong.textContent = `${label}:`;
+
+      paragraph.append(
+        strong,
+        document.createTextNode(String(value))
+      );
+
+      details.appendChild(paragraph);
+    });
+
+    statusSelect.value = event.status || "open";
+    saveStatusButton.disabled = false;
+    panel.hidden = false;
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderEvents() {
+    const searchTerm = document
+      .getElementById("searchInput")
+      .value.trim()
+      .toLowerCase();
+
+    const predictionFilter =
+      document.getElementById("predictionFilter").value;
+
+    const statusFilter =
+      document.getElementById("statusFilter").value;
+
+    const filteredEvents = allEvents.filter(event => {
+      const matchesSearch =
+        String(event.user_id || "").toLowerCase().includes(searchTerm) ||
+        String(event.event_type || "").toLowerCase().includes(searchTerm);
+
+      const prediction = event.prediction || "unknown";
+
+      const matchesPrediction =
+        predictionFilter === "all" ||
+        prediction === predictionFilter;
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        event.status === statusFilter;
+
+      return matchesSearch && matchesPrediction && matchesStatus;
+    });
+
+    tableBody.replaceChildren();
+
+    if (filteredEvents.length === 0) {
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+
+      cell.colSpan = 7;
+      cell.className = "empty";
+      cell.textContent = "No matching events found.";
+
+      row.appendChild(cell);
+      tableBody.appendChild(row);
+      return;
+    }
+
+    filteredEvents.forEach(event => {
+      const row = document.createElement("tr");
+
+      const employeeCell = document.createElement("td");
+      employeeCell.textContent = event.user_id || "Unknown";
+
+      const typeCell = document.createElement("td");
+      typeCell.textContent = event.event_type || "Unknown";
+
+      const predictionCell = document.createElement("td");
+
+      if (event.prediction === "Threat") {
+        predictionCell.appendChild(createBadge("Threat", "threat"));
+      } else if (event.prediction === "Normal") {
+        predictionCell.appendChild(createBadge("Normal", "normal"));
+      } else {
+        predictionCell.textContent = "Not analyzed";
+      }
+
+      const riskCell = document.createElement("td");
+      riskCell.textContent = formatRiskScore(event.risk_score);
+
+      const statusCell = document.createElement("td");
+      const currentStatus = event.status || "open";
+
+      const statusClass = {
+        open: "open",
+        under_review: "under-review",
+        resolved: "resolved"
+      }[currentStatus] || "open";
+
+      statusCell.appendChild(
+        createBadge(currentStatus.replace("_", " "), statusClass)
+      );
+
+      const timestampCell = document.createElement("td");
+      timestampCell.textContent = formatTimestamp(event.timestamp);
+
+      const actionCell = document.createElement("td");
+      const viewButton = document.createElement("button");
+
+      viewButton.textContent = "View Details";
+      viewButton.type = "button";
+      viewButton.addEventListener("click", () => {
+        openInvestigation(event);
+      });
+
+      actionCell.appendChild(viewButton);
+
+      row.append(
+        employeeCell,
+        typeCell,
+        predictionCell,
+        riskCell,
+        statusCell,
+        timestampCell,
+        actionCell
+      );
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  async function loadEvents() {
+    refreshButton.disabled = true;
+    statusElement.textContent = "Loading events from the API...";
+
+    try {
+      const response = await fetch(`${API}/events`, {
+  headers: {
+    Authorization: `Bearer ${accessToken}`
+  }
+});
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error("Unable to retrieve events");
+      }
+
+      allEvents = Array.isArray(data)
+  ? data
+  : Array.isArray(data.events)
+    ? data.events
+    : [];
+
+      document.getElementById("totalCount").textContent = allEvents.length;
+
+      document.getElementById("normalCount").textContent =
+        allEvents.filter(event => event.prediction === "Normal").length;
+
+      document.getElementById("threatCount").textContent =
+        allEvents.filter(event => event.prediction === "Threat").length;
+
+      document.getElementById("openThreatCount").textContent =
+        allEvents.filter(
+          event =>
+            event.prediction === "Threat" &&
+            event.status === "open"
+        ).length;
+
+      statusElement.textContent =
+        `Loaded ${allEvents.length} events across all employees.`;
+
+      renderEvents();
+
+      // Refresh the selected event's details if it still exists.
+      if (selectedEventId) {
+        const updatedEvent = allEvents.find(
+          event => event.event_id === selectedEventId
+        );
+
+        if (updatedEvent && !document.getElementById("investigationPanel").hidden) {
+          openInvestigation(updatedEvent);
+        }
+      }
+    } catch (error) {
+      statusElement.textContent =
+        `Could not load events. Ensure FastAPI is running. ${error.message}`;
+    } finally {
+      refreshButton.disabled = false;
+    }
+  }
+
+  async function saveInvestigationStatus() {
+    if (!selectedEventId) {
+      showInvestigationMessage("Select an event first.", true);
+      return;
+    }
+
+    const newStatus =
+      document.getElementById("investigationStatus").value;
+
+    saveStatusButton.disabled = true;
+    showInvestigationMessage("Saving investigation status...");
+
+    try {
+      const response = await fetch(
+        `${API}/events/${encodeURIComponent(selectedEventId)}/status`,
+        {
+          method: "PATCH",
+
+headers: {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${accessToken}`
+},
+
+          body: JSON.stringify({ status: newStatus })
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const detail = result.detail;
+        throw new Error(
+          typeof detail === "string"
+            ? detail
+            : "The API could not update the event status."
+        );
+      }
+
+      showInvestigationMessage(
+        `Status saved as "${newStatus.replace("_", " ")}".`
+      );
+
+      await loadEvents();
+
+    } catch (error) {
+      showInvestigationMessage(
+        `Could not save status: ${error.message}`,
+        true
+      );
+    } finally {
+      saveStatusButton.disabled = false;
+    }
+  }
+
+  document.getElementById("searchInput").addEventListener(
+    "input",
+    renderEvents
+  );
+
+  document.getElementById("predictionFilter").addEventListener(
+    "change",
+    renderEvents
+  );
+
+  document.getElementById("statusFilter").addEventListener(
+    "change",
+    renderEvents
+  );
+
+  refreshButton.addEventListener("click", loadEvents);
+
+  saveStatusButton.addEventListener("click", saveInvestigationStatus);
+
+  document.getElementById("closeInvestigationButton").addEventListener(
+    "click",
+    () => {
+      document.getElementById("investigationPanel").hidden = true;
+      selectedEventId = null;
+    }
+  );
+
+  loadEvents();
+
+async function loadDlpHistory() {
+  const status = document.getElementById("dlpStatus");
+  const tbody = document.getElementById("dlpHistoryBody");
+  const button = document.getElementById("refreshDlpButton");
+
+  button.disabled = true;
+  status.textContent = "Loading DLP history...";
+
+  try {
+    const response = await fetch(`${API}/dlp/scans?limit=50`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        typeof data.detail === "string"
+          ? data.detail
+          : "Could not load DLP history."
+      );
+    }
+
+    tbody.replaceChildren();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      const row = tbody.insertRow();
+      const cell = row.insertCell();
+      cell.colSpan = 7;
+      cell.textContent = "No DLP scans found.";
+      status.textContent = "No scans recorded yet.";
+      return;
+    }
+
+    for (const scan of data) {
+      const row = tbody.insertRow();
+
+      const values = [
+        scan.timestamp
+          ? new Date(scan.timestamp).toLocaleString()
+          : "Unknown",
+        scan.filename || "Unknown",
+        scan.destination || "Unknown",
+        scan.destination_authorized ? "Authorized" : "Unauthorized",
+        scan.risk_level || "Unknown",
+        (scan.findings || [])
+          .map(f => `${f.type} (${f.count})`)
+          .join(", ") || "None",
+        scan.review_required ? "Required" : "Not required"
+      ];
+
+      for (const value of values) {
+        const cell = row.insertCell();
+        cell.textContent = String(value);
+        cell.style.padding = "10px";
+        cell.style.borderTop = "1px solid #e2e8f0";
+      }
+    }
+
+    status.textContent = `${data.length} scan(s) loaded.`;
+  } catch (error) {
+    status.textContent = `Failed to load DLP history: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+document.getElementById("refreshDlpButton")
+  .addEventListener("click", loadDlpHistory);
+
+loadDlpHistory();
+
+
+async function runAIInvestigation() {
+  if (!selectedEventId) {
+    showInvestigationMessage("Select an event first.", true);
+    return;
+  }
+
+  const button = document.getElementById("runInvestigationButton");
+  const resultPanel = document.getElementById("aiInvestigationResult");
+
+  if (!button || !resultPanel) {
+    console.error("Investigation button or result panel is missing.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Investigating...";
+  resultPanel.textContent = "AI is analyzing the selected event...";
+
+  try {
+    const response = await fetch(
+      `${API}/events/${encodeURIComponent(selectedEventId)}/investigate`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        typeof data.detail === "string"
+          ? data.detail
+          : "The investigation request failed."
+      );
+    }
+
+    resultPanel.textContent =
+      `AI Investigation — ${data.model}\n\n` +
+      `${data.investigation}\n\n` +
+      `Event status changed: ${data.status_changed}\n` +
+      `Automated blocking: ${data.automated_blocking}`;
+
+  } catch (error) {
+    resultPanel.textContent =
+      `Investigation failed: ${error.message}`;
+  } finally {
+    button.disabled = false;
+    button.textContent = "Run AI Investigation";
+  }
+}
+
+</script>
+</body>
+</html>

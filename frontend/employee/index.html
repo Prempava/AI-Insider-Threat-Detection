@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureWork | Employee Portal</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f3f6fb;
+            color: #172033;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 410px;
+            padding: 36px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            box-shadow: 0 18px 50px rgba(30, 50, 80, 0.08);
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: #e8efff;
+            color: #2858c5;
+            font-size: 25px;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 9px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 17px 0 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d8e0ec;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3769d6;
+            box-shadow: 0 0 0 3px #3769d61c;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px;
+            border: 0;
+            border-radius: 9px;
+            background: #2858c5;
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2049a7;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 9px;
+            background: #f0f5ff;
+            color: #526582;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        #message {
+            margin-top: 14px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="login-card">
+
+        <div class="logo">🛡️</div>
+
+        <h1>Employee Portal</h1>
+
+        <p class="subtitle">
+            Welcome to SecureWork. Sign in to access your local
+            employee workspace.
+        </p>
+
+        <form id="loginForm">
+
+            <label for="employeeId">Employee ID</label>
+
+            <input
+                id="employeeId"
+                name="employeeId"
+                type="text"
+                placeholder="e.g. EMP001"
+                maxlength="100"
+                required
+            >
+
+            <label for="password">Password</label>
+
+            <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <button type="submit">
+                Continue to Workspace
+            </button>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </form>
+
+        <div class="notice">
+            <strong>Secure employee login</strong><br>
+            Sign in using your employee credentials.
+            Your session is protected using JWT authentication.
+        </div>
+
+    </main>
+
+    <script>
+        const API = "http://127.0.0.1:8000";
+
+        let cameraStream = null;
+
+        const loginForm = document.getElementById("loginForm");
+        const message = document.getElementById("message");
+
+        // Stop any camera stream started by this page.
+        function stopWebcam() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+
+                cameraStream = null;
+            }
+
+            const video = document.getElementById("video");
+
+            if (video) {
+                video.pause();
+                video.srcObject = null;
+            }
+        }
+
+        // Release camera resources when leaving this page.
+        window.addEventListener("pagehide", stopWebcam);
+
+        loginForm.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const employeeId = document
+                .getElementById("employeeId")
+                .value.trim();
+
+            const password = document
+                .getElementById("password")
+                .value;
+
+            const button = loginForm.querySelector(
+                'button[type="submit"]'
+            );
+
+            message.textContent = "";
+            message.style.color = "#b42318";
+
+            button.disabled = true;
+            button.textContent = "Authenticating...";
+
+            try {
+
+                const response = await fetch(
+                    `${API}/auth/employee/login`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            employee_id: employeeId,
+                            password: password
+                        })
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        typeof result.detail === "string"
+                            ? result.detail
+                            : "Employee login failed."
+                    );
+                }
+
+                if (
+                    !result.access_token ||
+                    result.role !== "employee"
+                ) {
+                    throw new Error(
+                        "Invalid employee login response."
+                    );
+                }
+
+                // Save the employee session for this browser tab.
+                sessionStorage.setItem(
+                    "employeeAccessToken",
+                    result.access_token
+                );
+
+                sessionStorage.setItem(
+                    "employeeId",
+                    result.employee_id
+                );
+
+                message.style.color = "#16803c";
+                message.textContent = "Login successful. Redirecting...";
+
+                // Stop this page's camera before redirecting.
+                stopWebcam();
+
+                window.location.replace("workspace.html");
+
+            } catch (error) {
+
+                message.textContent = error.message;
+
+                sessionStorage.removeItem("employeeAccessToken");
+                sessionStorage.removeItem("employeeId");
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "Continue to Workspace";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

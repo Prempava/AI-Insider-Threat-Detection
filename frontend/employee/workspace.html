@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureWork | Employee Workspace</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f3f6fb;
+      color: #172033;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .brand span {
+      color: #2858c5;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .employee {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    #logoutButton {
+      padding: 9px 15px;
+      border: 1px solid #d8e0ec;
+      border-radius: 8px;
+      background: #fff;
+      color: #2858c5;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    #logoutButton:hover {
+      background: #e8efff;
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin: 26px 0;
+    }
+
+    .card {
+      background: #fff;
+      padding: 22px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+    }
+
+    .card h2 {
+      font-size: 17px;
+      margin-top: 0;
+    }
+
+    .count {
+      font-size: 30px;
+      font-weight: 700;
+      margin: 10px 0 0;
+      color: #2858c5;
+    }
+
+    .action {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      background: #2858c5;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+
+    .action:hover {
+      background: #2049a7;
+    }
+
+    .secondary {
+      background: #e8efff;
+      color: #2858c5;
+    }
+
+    .secondary:hover {
+      background: #dce7ff;
+    }
+
+    .status {
+      padding: 12px;
+      background: #eef5ff;
+      border-radius: 8px;
+      margin-top: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .activity {
+      border-top: 1px solid #e2e8f0;
+      padding: 14px 0;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .activity strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .prediction-label {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .prediction-normal {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .prediction-threat {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    @media (max-width: 550px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">🛡️ Secure<span>Work</span></div>
+
+    <div class="header-right">
+      <div class="employee">
+        Employee: <strong id="employeeId">Loading...</strong>
+      </div>
+
+      <button id="logoutButton" type="button">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <h1>Employee Workspace</h1>
+
+    <p class="muted">
+      Simulate workplace activity and review the events associated with
+      your employee account.
+    </p>
+
+    <section class="grid" id="summaryCards">
+      <div class="card">
+        <h2>Total Activities</h2>
+        <p class="count" id="totalCount">0</p>
+      </div>
+
+      <div class="card">
+        <h2>Normal Predictions</h2>
+        <p class="count" id="normalCount">0</p>
+      </div>
+
+      <div class="card">
+        <h2>Threat Alerts</h2>
+        <p class="count" id="threatCount">0</p>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>📂 Normal file access</h2>
+        <p class="muted">Simulate a routine file-access event.</p>
+
+        <button
+          class="action"
+          id="normalButton"
+          type="button"
+          onclick="analyzeActivity('normal')">
+          Simulate activity
+        </button>
+      </section>
+
+      <section class="card">
+        <h2>🔎 Unusual file access</h2>
+        <p class="muted">Create a simulated unusual-access event.</p>
+
+        <button
+          class="action"
+          id="unusualButton"
+          type="button"
+          onclick="analyzeActivity('unusual')">
+          Simulate activity
+        </button>
+      </section>
+
+      <section class="card">
+        <h2>📋 Recent events</h2>
+        <p class="muted">Retrieve saved events from the API.</p>
+
+        <button
+          class="action secondary"
+          id="refreshButton"
+          type="button">
+          Refresh activity
+        </button>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Activity result</h2>
+      <p id="status" class="status" role="status" aria-live="polite">
+        Ready. Choose a simulated activity to begin.
+      </p>
+    </section>
+
+    <section class="card" style="margin-top: 20px">
+      <h2>Recent activity history</h2>
+      <div id="history" class="muted">Loading saved events...</div>
+    </section>
+
+    <p class="muted" style="font-size: 12px; margin-top: 20px">
+      Prototype only: activities and feature values are simulated.
+      Model scores are experimental and do not prove malicious intent.
+      Automated blocking is disabled.
+    </p>
+  </main>
+
+  <script>
+    const API = "http://127.0.0.1:8000";
+
+    const employeeId = sessionStorage.getItem("employeeId");
+    const employeeToken = sessionStorage.getItem("employeeAccessToken");
+
+    const history = document.getElementById("history");
+    const refreshButton = document.getElementById("refreshButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const statusBox = document.getElementById("status");
+    const normalButton = document.getElementById("normalButton");
+    const unusualButton = document.getElementById("unusualButton");
+
+    function logout() {
+      sessionStorage.removeItem("employeeAccessToken");
+      sessionStorage.removeItem("employeeId");
+      window.location.replace("index.html");
+    }
+
+    if (!employeeId || !employeeToken) {
+      logout();
+    } else {
+      document.getElementById("employeeId").textContent = employeeId;
+      loadEvents();
+    }
+
+    async function loadEvents() {
+      history.textContent = "Loading events...";
+      refreshButton.disabled = true;
+
+      try {
+        const response = await fetch(`${API}/employee/events`, {
+          headers: {
+            Authorization: `Bearer ${employeeToken}`
+          }
+        });
+
+        if (response.status === 401) {
+          logout();
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Request failed: HTTP ${response.status}`);
+        }
+
+        const employeeEvents = await response.json();
+
+        if (!Array.isArray(employeeEvents)) {
+          throw new Error("Unexpected events response from the API.");
+        }
+
+        document.getElementById("totalCount").textContent =
+          employeeEvents.length;
+
+        document.getElementById("normalCount").textContent =
+          employeeEvents.filter(
+            event => event.prediction === "Normal"
+          ).length;
+
+        document.getElementById("threatCount").textContent =
+          employeeEvents.filter(
+            event => event.prediction === "Threat"
+          ).length;
+
+        history.replaceChildren();
+
+        if (employeeEvents.length === 0) {
+          history.textContent = "No events found for this employee.";
+          return;
+        }
+
+        employeeEvents.slice(0, 10).forEach(event => {
+          const item = document.createElement("div");
+          item.className = "activity";
+
+          const title = document.createElement("strong");
+          title.textContent = event.event_type ?? "Activity";
+
+          const details = document.createElement("div");
+          details.textContent =
+            `${event.timestamp ?? "Unknown time"} | ` +
+            `Risk score: ${event.risk_score ?? "N/A"} | ` +
+            `Status: ${event.status ?? "Unknown"}`;
+
+          const prediction = document.createElement("span");
+          prediction.className = "prediction-label";
+
+          if (event.prediction === "Threat") {
+            prediction.classList.add("prediction-threat");
+            prediction.textContent =
+              "Threat prediction — requires review";
+          } else if (event.prediction === "Normal") {
+            prediction.classList.add("prediction-normal");
+            prediction.textContent = "Normal prediction";
+          } else {
+            prediction.textContent = "Not analyzed";
+          }
+
+          item.append(title, details, prediction);
+          history.appendChild(item);
+        });
+      } catch (error) {
+        history.textContent =
+          `Unable to load events. Check that FastAPI is running. ` +
+          error.message;
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    /*
+      IMPORTANT:
+      The original workspace did not include the implementation of
+      analyzeActivity(), and its backend request format has not yet
+      been verified. Do not invent a request payload here.
+      Simulation buttons will show a clear message until we connect
+      them to the actual backend endpoint.
+    */
+
+async function analyzeActivity(type) {
+  if (!employeeId || !employeeToken) {
+    logout();
+    return;
+  }
+
+  const button = type === "normal" ? normalButton : unusualButton;
+  button.disabled = true;
+  statusBox.textContent = "Analyzing simulated activity with the AI model...";
+
+  // All 20 normalized model inputs are required.
+  // These are illustrative prototype values, not real employee telemetry.
+  const features = {
+    L1_norm: 0.1,
+    L2_norm: 0.1,
+    L3_norm: 0.1,
+    L4_norm: 0.1,
+    L5_norm: 0.1,
+    L6_norm: 0.1,
+    L7_norm: 0.1,
+    L8_norm: 0.1,
+    L9_norm: 0.1,
+    E1_norm: 0.1,
+    E2_norm: 0.1,
+    E3_norm: 0.1,
+    E4_norm: 0.1,
+    E5_norm: 0.1,
+    F1_norm: 0.1,
+    H1_norm: 0.1,
+    H2_norm: 0.1,
+    H3_norm: 0.1,
+    D1_norm: 0.1,
+    D2_norm: 0.1
+  };
+
+  // Change selected inputs for the unusual scenario.
+  // This creates a test case; it does not guarantee a Threat prediction.
+  if (type === "unusual") {
+    features.L1_norm = 0.9;
+    features.L2_norm = 0.8;
+    features.E1_norm = 0.9;
+    features.F1_norm = 0.8;
+    features.D1_norm = 0.9;
+  }
+
+  const payload = {
+    user_id: employeeId,
+    event_type: type === "normal"
+      ? "Normal file access"
+      : "Unusual file access",
+    description: type === "normal"
+      ? "Simulated routine file access by employee."
+      : "Simulated unusual file access for security testing.",
+    risk_level: type === "normal" ? "low" : "high",
+    features
+  };
+
+  try {
+    const response = await fetch(`${API}/events/analyze`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${employeeToken}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (response.status === 401) {
+      logout();
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        typeof result.detail === "string"
+          ? result.detail
+          : `Analysis failed: HTTP ${response.status}`
+      );
+    }
+
+    statusBox.textContent =
+      `Activity saved. Prediction: ${result.prediction ?? "Unavailable"}; ` +
+      `risk score: ${result.risk_score ?? "N/A"}.`;
+
+    await loadEvents();
+  } catch (error) {
+    statusBox.textContent = `Unable to analyze activity: ${error.message}`;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+
+    refreshButton.addEventListener("click", loadEvents);
+    logoutButton.addEventListener("click", logout);
+  </script>
+</body>
+</html>
